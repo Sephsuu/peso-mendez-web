@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Menu } from "lucide-react";
+import { Menu, UserRound } from "lucide-react";
 import {
     Sheet,
     SheetContent,
@@ -11,6 +11,10 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
+import { useClaims } from "@/hooks/use-claims";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const routes = [
     { title: "Home", href: "/" },
@@ -20,6 +24,11 @@ const routes = [
 ];
 
 export function AppNavbar() {
+    const { claims, loading } = useClaims();
+    const userId = claims?.id || claims?.userId;
+    console.log(claims);
+    
+
     const [open, setOpen] = useState(false);
 
     return (
@@ -31,7 +40,7 @@ export function AppNavbar() {
                 </div>
 
                 {/* Desktop Navigation */}
-                <div className="hidden md:flex items-center gap-6">
+                <div className="hiudden md:flex items-center gap-6">
                     {routes.map((item, i) => (
                         <Link
                             href={item.href}
@@ -41,9 +50,14 @@ export function AppNavbar() {
                             {item.title}
                         </Link>
                     ))}
-                    <Button className="bg-primary text-white hover:opacity-90">
-                        Sign in / Register
-                    </Button>
+                    {userId && (
+                        <UserDropdown />
+                    )}
+                    {!userId && (
+                        <Button className="bg-primary text-white hover:opacity-90">
+                            Sign in / Register
+                        </Button>
+                    )}
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -87,5 +101,43 @@ export function AppNavbar() {
                 </div>
             </div>
         </nav>
+    );
+}
+
+export function UserDropdown() {
+    const router = useRouter();
+
+    const handleLogout = () => {
+        localStorage.removeItem("jwt_token");
+        toast.success('Logged out successfully!')
+        window.location.href="/auth/login"
+    };
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="bg-sky-100 rounded-full">
+                    <UserRound className="w-5 h-5" />
+                </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuLabel>Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem onClick={() => router.push("/account")}>
+                    My Account
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="text-red-600 focus:text-red-600"
+                >
+                    Logout
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
 }

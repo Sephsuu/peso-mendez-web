@@ -36,7 +36,7 @@ const sections = [
     "Other Skills",
 ];
 
-export function RegisterPage() {
+export function RegisterPage({ fromProfile = false, toEdit }) {
     const [section, setSection] = useState(sections[0]);
     const [userId, setUserId] = useState(0)
     const router = useRouter();
@@ -113,10 +113,10 @@ export function RegisterPage() {
             <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-6 sm:p-8 border border-gray-100">
                 {/* Title */}
                 <h1 className="text-2xl sm:text-3xl font-semibold text-center text-primary">
-                    Create Your Account
+                    {fromProfile ? "Edit Credentials" : "Create Your Account"}
                 </h1>
                 <p className="text-center text-gray-500 mb-6 text-sm sm:text-base">
-                    Job seekers and employers can register here.
+                    {!fromProfile && "Job seekers and employers can register here."}
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -128,7 +128,7 @@ export function RegisterPage() {
                         <Input
                             id="fullname"
                             type="text"
-                            value={fullName}
+                            value={(toEdit && toEdit.fullName) ?? fullName}
                             onChange={(e) => setFullName(e.target.value)}
                             className="bg-blue-50 border-primary/30 focus-visible:ring-primary w-full"
                         />

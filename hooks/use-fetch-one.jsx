@@ -1,15 +1,5 @@
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
-/**
- * Fetches a single item using an async function.
- * Automatically handles loading, error, and cleanup.
- *
- * @param {Function} fetchFn - The async fetch function.
- * @param {Array} deps - Optional dependencies to trigger re-fetch.
- * @param {Array} args - Arguments to pass to the fetch function.
- * @returns {{ data: any, loading: boolean, error: string|null }}
- */
 export function useFetchOne(fetchFn, deps = [], args = []) {
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,6 +7,12 @@ export function useFetchOne(fetchFn, deps = [], args = []) {
 
     useEffect(() => {
         let isMounted = true;
+
+        // ⛔ Prevent running fetch when args contain null/undefined
+        if (args.some(a => a == null || a === undefined)) {
+            setLoading(false);
+            return;
+        }
 
         async function fetchData() {
             try {
@@ -26,6 +22,8 @@ export function useFetchOne(fetchFn, deps = [], args = []) {
             } catch (err) {
                 const message = err?.message || "Failed to fetch data";
                 setError(message);
+
+                // ⛔ Only show toast if it's a REAL error — not initial empty args.
                 toast.error(message);
             } finally {
                 if (isMounted) setLoading(false);

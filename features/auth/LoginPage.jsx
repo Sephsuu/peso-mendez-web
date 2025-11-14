@@ -44,10 +44,7 @@ export function LoginPage() {
                 toast.success("Successfully logged in!");
 
                 const role = user?.role;
-                if (role === "job_seeker") router.push("/");
-                else if (role === "employer") router.push("/");
-                else if (role === "admin") router.push("/");
-                else router.push("/");
+                window.location.href = "/";
             } else {
                 toast.error("Token missing in response.");
             }
