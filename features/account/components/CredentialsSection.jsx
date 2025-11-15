@@ -10,20 +10,19 @@ import Loader from "@/components/ui/loader";
 import { useFetchOne } from "@/hooks/use-fetch-one";
 import { BASE_URL } from "@/services/_config";
 import { toast } from "sonner";
+import {  UpdateCredentials } from '@/features/account/components/UpdateCredentials'
 
 export function CredentialsSection() {
     const { claims, loading: authLoading } = useClaims();
     const userId = claims?.id || claims?.userId;
     const { data, loading } = useFetchOne(UserService.getUserCredential, [userId], [userId]);
     const [toEdit, setEdit] = useState(false);
-    console.log(claims);
-    console.log(data);
     
     if (authLoading || loading) return <Loader />
     if (!data) return <div>Error</div>
     return (
         <>
-            {toEdit ? <RegisterPage fromProfile={true} />
+            {toEdit ? <UpdateCredentials user={ data } open={ toEdit } setOpen={ setEdit } />
             : (
                 <ScrollArea className="max-h-screen overflow-y-auto bg-gray-50">
                     {/* Header */}

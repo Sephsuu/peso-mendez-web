@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { CredentialsSection } from '@/features/account/components/CredentialsSection'
+import { PersonalInformationSection } from '@/features/account/components/PersonalInformationSection'
+import { JobReferenceSection } from '@/features/account/components/JobReferenceSection'
+import { LanguageProficiencySection } from '@/features/account/components/LanguageProficencySection'
+
 
 const sections = [
     "Credentials",
@@ -32,9 +36,10 @@ export function AccountPage() {
             </div>
 
             <div className="col-span-3">
-                {tab === 'Credentials' && (
-                    <CredentialsSection />
-                )}
+                {tab === sections[0] && (<CredentialsSection />)}
+                {tab === sections[1] && (<PersonalInformationSection />)}
+                {tab === sections[2] && (<JobReferenceSection />)}
+                {tab === sections[3] && (<LanguageProficiencySection />)}
             </div>
         </section>
     );
