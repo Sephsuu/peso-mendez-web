@@ -1,7 +1,7 @@
-import { AllApplicationsPage } from '@/features/applications/AllApplications'
+import { ApplicationsPage } from '@/features/applications/ApplicationsPage'
 
 export default function ViewApplication() {
     return (
-        <AllApplicationsPage />
+        <ApplicationsPage />
     )
 }

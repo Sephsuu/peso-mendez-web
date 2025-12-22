@@ -29,7 +29,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 
-export default function ViewJobPage() {
+export function ViewJobPage() {
     const { id } = useParams();
     const { claims, loading } = useClaims();
 
@@ -140,34 +140,44 @@ export default function ViewJobPage() {
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-3 mt-2">
-                        <Button
-                            variant="secondary"
-                            className={
-                                isSaved
-                                    ? "bg-yellow-400 text-black hover:bg-yellow-500"
-                                    : "bg-white text-indigo-700 hover:bg-indigo-100"
-                            }
-                            onClick={saveJob}
-                        >
-                            {isSaved ? "Saved" : "Save Job"}
-                        </Button>
+                    {claims.role === "job_seeker" && (
+                        <div className="flex flex-wrap gap-3 mt-2">
+                            <Button
+                                variant="secondary"
+                                className={
+                                    isSaved
+                                        ? "bg-yellow-400 text-black hover:bg-yellow-500"
+                                        : "bg-white text-indigo-700 hover:bg-indigo-100"
+                                }
+                                onClick={saveJob}
+                            >
+                                {isSaved ? "Saved" : "Save Job"}
+                            </Button>
 
-                        <Button
-                            className={
-                                isApplied
-                                    ? "bg-green-600 hover:bg-green-700"
-                                    : "bg-indigo-700 hover:bg-indigo-800"
-                            }
-                            onClick={() =>
-                                isApplied
-                                    ? unapplyJob()
-                                    : setOpenDialog(true)
-                            }
+                            <Button
+                                className={
+                                    isApplied
+                                        ? "bg-green-600 hover:bg-green-700"
+                                        : "bg-indigo-700 hover:bg-indigo-800"
+                                }
+                                onClick={() =>
+                                    isApplied
+                                        ? unapplyJob()
+                                        : setOpenDialog(true)
+                                }
+                            >
+                                {isApplied ? "Applied" : "Apply Job"}
+                            </Button>
+                        </div>
+                    )}
+                    {claims.role === "employer" && (
+                        <Button 
+                            variant="secondary"
+                            className="bg-light w-fit"
                         >
-                            {isApplied ? "Applied" : "Apply Job"}
+                            Edit Job
                         </Button>
-                    </div>
+                    )}
                 </div>
             </section>
 

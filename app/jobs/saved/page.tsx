@@ -1,0 +1,1 @@
+export { AllSavedJobsPage as default } from '@/features/jobs/ViewSavedJobsPage'

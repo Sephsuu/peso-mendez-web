@@ -9,14 +9,7 @@ import { MapPin, Coins } from "lucide-react";
 import { useFetchData } from "@/hooks/use-fetch-data";
 import { JobService } from "@/services/job.service";
 import Link from "next/link";
-
-// Simulated API service
-const mockJobs = [
-    { id: 1, title: "Programmer", company: "Accenture", location: "Mendez, Cavite", salary: "₱50,000/month", type: "Full-Time" },
-    { id: 2, title: "Administrative Assistant", company: "Sunrise Trading Co.", location: "Quezon City", salary: "₱28,000/month", type: "Part-Time" },
-    { id: 3, title: "Electrician", company: "Powerlink Services", location: "Mendez, Cavite", salary: "₱25,000/month", type: "Full-Time" },
-    { id: 4, title: "Data Encoder", company: "Mendez Data Solutions", location: "Mendez, Cavite", salary: "₱20,000/month", type: "Part-Time" },
-];
+import { useClaims } from "@/hooks/use-claims";
 
 export function JobListingPage() {
     const [activeTab, setActiveTab] = useState("featured");
@@ -24,8 +17,17 @@ export function JobListingPage() {
     const [find, setFind] = useState("");
     const [type, setType] = useState("all");
     const [filteredJobs, setFilteredJobs] = useState([]);
+    const [filteredRecoJobs, setFilteredRecoJobs] = useState([]);
+
+    const { claims, loading: authLoading } = useClaims();
+    const userId = claims?.id || claims?.userId;
 
     const { data: jobs, loading: jobsLoading } = useFetchData(JobService.getAllJobs, [])
+    const { data: recommendedJobs, loading: recommendedLoading } = useFetchData(
+        JobService.getAllJobs, 
+        [userId],
+        [userId]
+    )
 
     useEffect(() => {
         if (!jobs || jobs.length === 0) return;   // prevent unnecessary runs
@@ -47,8 +49,28 @@ export function JobListingPage() {
         setFilteredJobs(result);
     }, [find, type, jobs]);
 
+    useEffect(() => {
+        if (!recommendedJobs || recommendedJobs.length === 0) return;   // prevent unnecessary runs
 
-    if (jobsLoading) return <div>Loading</div>
+        let result = recommendedJobs;
+
+        if (find.trim() !== "") {
+            result = result.filter((job) =>
+                job.title.toLowerCase().includes(find.toLowerCase())
+            );
+        }
+
+        if (type !== "all") {
+            result = result.filter(
+                (job) => job.type.toLowerCase() === type.toLowerCase()
+            );
+        }
+
+        setFilteredRecoJobs(result);
+    }, [find, type, recommendedJobs]);
+
+
+    if (jobsLoading || authLoading) return <div>Loading</div>
     return (
         <div className="min-h-screen bg-linear-to-b from-indigo-50 via-indigo-100 to-indigo-50 flex flex-col">
             <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8 space-y-8">
@@ -120,9 +142,36 @@ export function JobListingPage() {
                             <p className="text-center text-gray-500 py-6">
                                 No jobs found. Try adjusting your filters.
                             </p>
-                        ) : (
+                        ) : activeTab === "featured" ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                                 {filteredJobs.map((job) => (
+                                    <div
+                                        key={job.id}
+                                        className="bg-white rounded-xl shadow p-5 space-y-3 border border-gray-200 hover:shadow-md transition"
+                                    >
+                                        <h4 className="text-lg font-semibold text-gray-900">
+                                            {job.title}
+                                        </h4>
+                                        <p className="text-gray-700">{job.company}</p>
+                                        <div className="flex items-center gap-2 text-gray-600 text-sm">
+                                            <MapPin className="w-4 h-4 text-pink-500" />
+                                            <span>{job.location}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-gray-700 text-sm">
+                                            <Coins className="w-4 h-4 text-yellow-600" />
+                                            <span className="font-semibold text-blue-700">
+                                                {job.salary} • {job.company}
+                                            </span>
+                                        </div>
+                                        <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold mt-3 w-fit">
+                                            <Link href={`/jobs/${job.id}`}>View Details</Link>
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+                                {filteredRecoJobs.map((job) => (
                                     <div
                                         key={job.id}
                                         className="bg-white rounded-xl shadow p-5 space-y-3 border border-gray-200 hover:shadow-md transition"

@@ -98,8 +98,7 @@ export function UpdateLanguageProficiency({ open, setOpen, user, userId }) {
             }
 
             for (const lang of payload) {
-                delete lang.id;
-                await UserService.createLanguageProfeciency(lang);
+                await UserService.updateUserLanguageProficiency(lang);
             }
 
             toast.success("Language proficiency updated!");

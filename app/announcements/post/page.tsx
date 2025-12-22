@@ -1,0 +1,1 @@
+export { CreateAnnouncements as default } from "@/features/announcements/components/CreateAnnouncement"

@@ -1,0 +1,1 @@
+export { CreateJobPage as default } from "@/features/jobs/components/CreateJobPage"

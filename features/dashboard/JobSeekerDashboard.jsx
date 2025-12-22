@@ -132,11 +132,11 @@ export function JobSeekerDashboard() {
                                         <td className="p-3 border">
                                             <span
                                                 className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                                    app.applicationStatus === "REJECTED"
+                                                    app.applicationStatus === "Rejected"
                                                         ? "bg-red-100 text-red-600"
-                                                        : app.applicationStatus === "SENT"
+                                                        : app.applicationStatus === "Sent"
                                                         ? "bg-blue-100 text-blue-600"
-                                                        : app.applicationStatus === "REVIEWED"
+                                                        : app.applicationStatus === "Reviewed"
                                                         ? "bg-green-100 text-green-600"
                                                         : "bg-gray-100 text-gray-600"
                                                 }`}
@@ -175,9 +175,11 @@ export function JobSeekerDashboard() {
                 <section className="bg-white rounded-xl shadow p-6">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-lg font-semibold">Saved Jobs</h2>
-                        <button className="text-blue-600 text-sm font-medium hover:underline">
-                            See All
-                        </button>
+                        <Link href='/jobs/saved'>
+                            <button className="text-blue-600 text-sm font-medium hover:underline">
+                                See All
+                            </button>
+                        </Link>
                     </div>
 
                     {loadingSaved ? (
@@ -215,7 +217,7 @@ export function JobSeekerDashboard() {
                                     </div>
 
                                     <div className="mt-4">
-                                        <Link href={`/jobs/${job.id}`}>
+                                        <Link href={`/jobs/saved/${job.id}`}>
                                             <Button
                                                 size="sm"
                                                 className="w-full bg-blue-600 text-white hover:bg-blue-700"

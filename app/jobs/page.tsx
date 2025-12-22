@@ -1,7 +1,7 @@
-import { JobListingPage } from '@/features/jobs/JobListingPage'
+import { JobsPage } from '@/features/jobs/JobsPage'
 
 export default function Jobs() {
     return (
-        <JobListingPage />
+        <JobsPage />
     )
 }

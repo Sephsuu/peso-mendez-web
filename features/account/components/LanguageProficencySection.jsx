@@ -61,9 +61,9 @@ export function LanguageProficiencySection() {
                             <h3 className="text-lg font-medium mb-2">{ item.language } Language:</h3>
                             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                                 <InfoCheckbox label="Read" checked={item.read === 1} />
-                                <InfoCheckbox label="Write" checked={item.write} />
-                                <InfoCheckbox label="Speak" checked={item.speak} />
-                                <InfoCheckbox label="Understand" checked={item.understand} />
+                                <InfoCheckbox label="Write" checked={item.write === 1} />
+                                <InfoCheckbox label="Speak" checked={item.speak === 1} />
+                                <InfoCheckbox label="Understand" checked={item.understand === 1} />
                             </div>
                         </div>
                     )) }

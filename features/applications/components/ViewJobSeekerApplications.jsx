@@ -12,7 +12,7 @@ import { Mail, MessageSquare, ArrowLeft } from "lucide-react";
 import { AppFooter } from "@/components/shared/AppFooter";
 import Link from "next/link";
 
-export function AllApplicationsPage() {
+export function ViewJobSeekerApplications() {
     const router = useRouter();
     const { claims, loading } = useClaims();
     const userId = claims?.id || claims?.userId;
@@ -29,7 +29,7 @@ export function AllApplicationsPage() {
     if (loading || appsLoading) return <div className="p-6 text-center">Loading...</div>;
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-indigo-100 flex flex-col">
+        <div className="min-h-screen bg-linear-to-b from-indigo-50 to-indigo-100 flex flex-col">
             {/* HEADER */}
             <section className="bg-white shadow-sm px-4 sm:px-8 py-4 flex items-center justify-between">
                 <h1 className="text-xl sm:text-2xl font-semibold text-indigo-700">All Applications</h1>

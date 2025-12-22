@@ -1,0 +1,1 @@
+export { ViewJobPage as default } from '@/features/jobs/ViewJobPage'
