@@ -46,6 +46,10 @@ export class JobService {
         return await requestData(`${url}/save-job?userId=${userId}&jobId=${jobId}`, 'POST');
     }
 
+    static async unsaveJob(userId, jobId) {
+        return await requestData(`${url}/unsave-job?userId=${userId}&jobId=${jobId}`, 'POST');
+    }
+
     static async updateJob(job) {
         return await requestData(`${url}/update`, 'PATCH', undefined, job);
     }

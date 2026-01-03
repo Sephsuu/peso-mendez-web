@@ -8,11 +8,15 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { UserService } from "@/services/user.service";
+import { educationLevels } from "@/lib/utils";
+import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from "@/components/ui/select";
 
 export function EducationalBackgroundForm({ userId, fromProfile = false, setSection }) {
     const router = useRouter();
 
     const [formData, setFormData] = useState({
+        highest_education: "",
+
         elemYearGrad: "",
         elemLevelReached: "",
         elemYearLastAttended: "",
@@ -90,6 +94,15 @@ export function EducationalBackgroundForm({ userId, fromProfile = false, setSect
                         {fromProfile ? "Back" : "Skip for now"}
                     </button>
                 </div>
+
+                <Section title="Highest Education">
+                        <SelectGroup
+                            value={formData.highest_education}
+                            onValueChange={(val) => handleChange("highest_education", val)}
+                            items={educationLevels}
+                            required
+                        />
+                </Section>
 
                 {/* Elementary */}
                 <Section title="Elementary">
@@ -266,7 +279,7 @@ export function EducationalBackgroundForm({ userId, fromProfile = false, setSect
 function Section({ title, children }) {
     return (
         <section className="space-y-4">
-            <h3 className="text-lg font-semibold">{title}</h3>
+            <h3 className="text-lg font-semibold">{title} {title === "Highest Education" && <span className="text-red-500">*</span>}</h3>
             {children}
         </section>
     );
@@ -284,6 +297,28 @@ function InputRow({ fields }) {
                     className="bg-blue-50 border-primary/30 focus-visible:ring-primary w-full"
                 />
             ))}
+        </div>
+    );
+}
+
+function SelectGroup({ label, value, onValueChange, items, required }) {
+    return (
+        <div className="space-y-1">
+            <Label>
+                {label}
+            </Label>
+            <Select value={value} onValueChange={onValueChange}>
+                <SelectTrigger className="bg-blue-50 border-primary/30 focus-visible:ring-primary w-full">
+                    <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                    {items.map((item) => (
+                        <SelectItem key={item} value={item}>
+                            {item}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
         </div>
     );
 }

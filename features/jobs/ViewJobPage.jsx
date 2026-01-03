@@ -28,6 +28,7 @@ import {
     DialogDescription,
     DialogFooter,
 } from "@/components/ui/dialog";
+import { PESOLoader } from "@/components/ui/loader";
 
 export function ViewJobPage() {
     const { id } = useParams();
@@ -75,19 +76,22 @@ export function ViewJobPage() {
         setIsApplied(!isObjectEmpty(applied));
     }, [applied]);
 
-    async function saveJob() {
+    async function toggleSaveJob() {
         try {
-            await JobService.saveJob(userId, jobId);
-            setIsSaved((prev) => !prev);
-            toast.success(
-                !isSaved
-                    ? "Job successfully saved"
-                    : "Job removed from saved list"
-            );
+            if (isSaved) {
+                await JobService.unsaveJob(userId, jobId);
+                setIsSaved(false);
+                toast.success("Job removed from saved list");
+            } else {
+                await JobService.saveJob(userId, jobId);
+                setIsSaved(true);
+                toast.success("Job successfully saved");
+            }
         } catch {
             toast.error("Failed to update saved jobs.");
         }
     }
+
 
     async function handleConfirmApply() {
         try {
@@ -111,8 +115,7 @@ export function ViewJobPage() {
         }
     }
 
-    if (loading || jobLoading || jobSkillsLoading)
-        return <div>Loading...</div>;
+    if (loading || jobLoading || jobSkillsLoading) return <PESOLoader />;
 
     return (
         <div className="min-h-screen bg-linear-to-b from-indigo-100 to-indigo-50 flex flex-col">
@@ -146,13 +149,14 @@ export function ViewJobPage() {
                                 variant="secondary"
                                 className={
                                     isSaved
-                                        ? "bg-yellow-400 text-black hover:bg-yellow-500"
+                                        ? "bg-warning text-black hover:opacity-90"
                                         : "bg-white text-indigo-700 hover:bg-indigo-100"
                                 }
-                                onClick={saveJob}
+                                onClick={toggleSaveJob}
                             >
-                                {isSaved ? "Saved" : "Save Job"}
+                                {isSaved ? "Unsave Job" : "Save Job"}
                             </Button>
+
 
                             <Button
                                 className={

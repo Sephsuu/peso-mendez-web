@@ -8,9 +8,52 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { useState } from "react";
 import { UserService } from "@/services/user.service";
+import { caviteLocations } from "@/lib/utils";
 
-export function UpdatePersonalInformation({ open, setOpen, user, userId }) {
-    const [form, setForm] = useState({ ...user });
+const DISABILITY_OPTIONS = [
+    "N/A",
+    "Visual",
+    "Hearing",
+    "Speech",
+    "Physical",
+    "Mental",
+    "Other",
+];
+
+const EMPLOYMENT_STATUS_OPTIONS = ["Employed", "Unemployed"];
+
+const EMPLOYED_TYPES = ["Wage employed", "Self-employed"];
+
+const UNEMPLOYED_TYPES = [
+    "New/Fresh Graduate",
+    "Finished Contract",
+    "Resigned",
+    "Retired",
+    "Laid off due to calamity",
+    "Terminated",
+];
+
+
+export function UpdatePersonalInformation({ open, setOpen, user, userId, setReload }) {
+    const [form, setForm] = useState({
+        first_name: user?.first_name ?? "",
+        middle_name: user?.middle_name ?? "",
+        surname: user?.surname ?? "",
+        suffix: user?.suffix ?? "",
+        date_of_birth: user?.date_of_birth ?? "",
+        sex: user?.sex ?? "",
+        religion: user?.religion ?? "",
+        present_address: user?.present_address ?? "",
+        tin: user?.tin ?? "",
+        civil_status: user?.civil_status ?? "",
+        disability: user?.disability ?? "",
+        employment_status: user?.employment_status ?? "",
+        employment_type: user?.employment_type ?? "",
+        is_ofw: user?.is_ofw ?? "",
+        is_former_ofw: user?.is_former_ofw ?? "",
+        citmun: user?.citmun ?? "",
+    });
+
     const [loading, setLoading] = useState(false);
 
     function updateField(key, value) {
@@ -23,35 +66,38 @@ export function UpdatePersonalInformation({ open, setOpen, user, userId }) {
 
             const payload = {
                 userId: userId,
+
                 surname: form.surname,
                 firstName: form.first_name,
-                middleName: form.middle_name,
-                suffix: form.suffix,
                 dateOfBirth: form.date_of_birth,
-                religion: form.religion,
                 presentAddress: form.present_address,
-                tin: form.tin,
                 sex: form.sex,
                 civilStatus: form.civil_status,
+                employmentStatus: form.employment_status,
                 disability: form.disability,
                 employmentStatus: form.employment_status,
                 employmentType: form.employment_type,
                 isOfw: form.is_ofw,
                 isFormerOfw: form.is_former_ofw,
+                citmun: form.citmun,
             };
 
+            if (form.middle_name) payload.middleName = form.middle_name;
+            if (form.suffix) payload.suffix = form.suffix;
+            if (form.religion) payload.religion = form.religion;
+            if (form.tin) payload.tin = form.tin;
+
             if (!user || Object.keys(user).length === 0) {
-                const data = await UserService.createPersonalInformation(payload);
-                if (data) {
-                    toast.success("Personal Information created successfully!")
-                    setOpen(false)
-                    return;
-                }
+                await UserService.createPersonalInformation(payload);
+                toast.success("Personal Information created successfully!");
+                setOpen(false);
+                return;
             }
 
-            const res = await UserService.updateUserPersonalInformation(payload);
+            await UserService.updateUserPersonalInformation(payload);
 
             toast.success("Personal information updated!");
+            setReload(prev => !prev);
             setOpen(false);
         } catch (err) {
             toast.error(err.message || "Update failed.");
@@ -59,6 +105,7 @@ export function UpdatePersonalInformation({ open, setOpen, user, userId }) {
             setLoading(false);
         }
     }
+
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -92,7 +139,7 @@ export function UpdatePersonalInformation({ open, setOpen, user, userId }) {
                     </FormItem>
 
                     {/* GENDER */}
-                    <FormItem label="Gender">
+                    <FormItem label="Sex">
                         <Select value={form.sex} onValueChange={(val) => updateField("sex", val)}>
                             <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
                             <SelectContent>
@@ -106,6 +153,17 @@ export function UpdatePersonalInformation({ open, setOpen, user, userId }) {
                     {/* RELIGION */}
                     <FormItem label="Religion">
                         <Input value={form.religion} onChange={(e) => updateField("religion", e.target.value)} />
+                    </FormItem>
+
+                    <FormItem label="City/Municipality">
+                        <Select value={form.citmun} onValueChange={(val) => updateField("citmun", val)}>
+                            <SelectTrigger><SelectValue placeholder="Select city/municipality" /></SelectTrigger>
+                            <SelectContent>
+                                {caviteLocations.map((item) => (
+                                    <SelectItem key={item} value={item}>{item}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </FormItem>
 
                     {/* PRESENT ADDRESS */}
@@ -164,17 +222,15 @@ export function UpdatePersonalInformation({ open, setOpen, user, userId }) {
                             <SelectContent>
                                 {form.employment_status === "Employed" ? (
                                     <>
-                                        <SelectItem value="Wage employed">Wage employed</SelectItem>
-                                        <SelectItem value="Self-employed">Self-employed</SelectItem>
+                                        {EMPLOYED_TYPES.map((item) => (
+                                            <SelectItem key={item} value={item}>{item}</SelectItem>
+                                        ))}
                                     </>
                                 ) : (
                                     <>
-                                        <SelectItem value="New/Fresh Graduate">New/Fresh Graduate</SelectItem>
-                                        <SelectItem value="Finished Contract">Finished Contract</SelectItem>
-                                        <SelectItem value="Resigned">Resigned</SelectItem>
-                                        <SelectItem value="Retired">Retired</SelectItem>
-                                        <SelectItem value="Laid off due to calamity">Laid off due to calamity</SelectItem>
-                                        <SelectItem value="Terminated">Terminated</SelectItem>
+                                        {UNEMPLOYED_TYPES.map((item) => (
+                                            <SelectItem key={item} value={item}>{item}</SelectItem>
+                                        ))}
                                     </>
                                 )}
                             </SelectContent>

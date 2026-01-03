@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { useClaims } from "@/hooks/use-claims";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const routes = [
@@ -24,6 +24,12 @@ const routes = [
 ];
 
 export function AppNavbar() {
+    const pathname = usePathname();
+
+    if (pathname === "/account/email-verification") {
+        return null;
+    }
+
     const { claims, loading } = useClaims();
     const userId = claims?.id || claims?.userId;
     console.log(claims);

@@ -11,6 +11,7 @@ import { useFetchOne } from "@/hooks/use-fetch-one";
 import { BASE_URL } from "@/services/_config";
 import { toast } from "sonner";
 import {  UpdateCredentials } from '@/features/account/components/UpdateCredentials'
+import { formatDateToWord } from "@/lib/helper";
 
 export function CredentialsSection() {
     const { claims, loading: authLoading } = useClaims();
@@ -73,17 +74,17 @@ export function CredentialsSection() {
                             </div>
 
                             {/* Resume Section */}
-                            <ResumeCard 
+                            {/* <ResumeCard 
                                 user={data} 
                                 refresh={() => setEdit(false)} 
-                            />
+                            /> */}
 
 
                             {/* Account Created */}
                             <div>
                                 <p className="font-semibold text-gray-700">Account Created:</p>
                                 <p className="mt-1 text-gray-600 text-sm md:text-base">
-                                    { data.created_at }
+                                    { formatDateToWord(data.created_at) }
                                 </p>
                             </div>
 

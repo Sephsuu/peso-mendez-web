@@ -8,6 +8,14 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { UserService } from "@/services/user.service";
+import { caviteLocations } from "@/lib/utils";
+
+const OPTIONAL_FIELDS = [
+    "middleName",
+    "suffix",
+    "tin",
+    "religion",
+];
 
 export function PersonalInformationForm({ userId, fromProfile = false, setSection }) {
     const router = useRouter();
@@ -28,6 +36,7 @@ export function PersonalInformationForm({ userId, fromProfile = false, setSectio
         isOfw: "",
         isFormerOfw: "",
         dateOfBirth: "",
+        citmun: "Mendez"
     });
 
     const [loading, setLoading] = useState(false);
@@ -39,7 +48,18 @@ export function PersonalInformationForm({ userId, fromProfile = false, setSectio
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.surname || !formData.firstName || !formData.presentAddress || !formData.sex) {
+        const missingField = Object.entries(formData).find(
+            ([key, value]) =>
+                !OPTIONAL_FIELDS.includes(key) &&
+                (!value || value.toString().trim() === "")
+        );
+
+        if (missingField) {
+            toast.error("Please fill in all required fields.");
+            return;
+        }
+
+        if (missingField) {
             toast.error("Please fill in all required fields.");
             return;
         }
@@ -94,6 +114,12 @@ export function PersonalInformationForm({ userId, fromProfile = false, setSectio
                 </div>
 
                 {/* Address */}
+                <SelectGroup
+                    label="City/Municipality"
+                    value={formData.citmun}
+                    onValueChange={(val) => handleChange("citmun", val)}
+                    items={caviteLocations}
+                />
                 <InputGroup
                     label="Present Address"
                     placeholder="House No./Barangay/Municipality/Province"
@@ -140,6 +166,7 @@ export function PersonalInformationForm({ userId, fromProfile = false, setSectio
                         value={formData.disability}
                         onValueChange={(val) => handleChange("disability", val)}
                         items={["None", "Visual", "Hearing", "Speech", "Physical", "Mental", "Others"]}
+                        required
                     />
 
                     <SelectGroup
@@ -222,7 +249,7 @@ function InputGroup({ label, value, onChange, placeholder, type = "text", requir
 function SelectGroup({ label, value, onValueChange, items }) {
     return (
         <div className="space-y-1">
-            <Label>{label}</Label>
+            <Label>{label} <span className="text-red-500">*</span></Label>
             <Select value={value} onValueChange={onValueChange}>
                 <SelectTrigger className="bg-blue-50 border-primary/30 focus-visible:ring-primary w-full">
                     <SelectValue placeholder="Select" />

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useClaims } from "@/hooks/use-claims";
 import { format } from "date-fns";
 import Link from "next/link";
+import { PESOLoader } from "@/components/ui/loader";
 
 export function JobSeekerDashboard() {
     const { claims, loading } = useClaims();
@@ -37,7 +38,7 @@ export function JobSeekerDashboard() {
         [userId]
     );
 
-    if (loading) return <div>Loading...</div>;
+    if (loading || loadingProfile) return <PESOLoader />;
 
     return (
         <div className="min-h-screen flex flex-col bg-purple-50">
@@ -55,7 +56,9 @@ export function JobSeekerDashboard() {
                     <div className="flex justify-between items-center">
                         <h2 className="text-lg font-semibold">Profile Strength</h2>
                         <span className="text-sm font-medium">
-                            {loadingProfile ? "..." : `${profileStrength ?? 0}%`}
+                            {typeof profileStrength === "number"
+                                ? `${profileStrength.toFixed()}%`
+                                : "0%"}
                         </span>
                     </div>
 
@@ -119,8 +122,10 @@ export function JobSeekerDashboard() {
                             <tbody>
                                 {applications.slice(0, 5).map((app, i) => (
                                     <tr key={i} className="border-t hover:bg-gray-50">
-                                        <td className="p-3 border text-blue-600 font-medium cursor-pointer hover:underline">
-                                            {app.title ?? "N/A"}
+                                        <td 
+                                            className="p-3 border text-blue-600 font-medium cursor-pointer hover:underline"
+                                        >
+                                            <Link href={`/jobs/${app.id}`}>{app.title ?? "N/A"}</Link>
                                         </td>
                                         <td className="p-3 border">{app.company ?? "N/A"}</td>
                                         <td className="p-3 border">{app.location ?? "N/A"}</td>

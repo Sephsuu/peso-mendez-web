@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { UserService } from "@/services/user.service";
+import { caviteLocations } from "@/lib/utils";
 
 export function JobReferenceForm({ userId, fromProfile = false, setSection }) {
     const router = useRouter();
@@ -32,7 +33,23 @@ export function JobReferenceForm({ userId, fromProfile = false, setSection }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.occupationType || !formData.locationType || !formData.occupation1 || !formData.location1) {
+        const requiredFields = [
+            "occupationType",
+            "occupation1",
+            "occupation2",
+            "occupation3",
+            "locationType",
+            "location1",
+            "location2",
+            "location3",
+        ];
+
+        const missingField = requiredFields.find(
+            (field) =>
+                !formData[field] || formData[field].toString().trim() === ""
+        );
+
+        if (missingField) {
             toast.error("Please fill in all required fields.");
             return;
         }
@@ -51,7 +68,7 @@ export function JobReferenceForm({ userId, fromProfile = false, setSection }) {
             if (fromProfile) {
                 router.back();
             } else {
-                setSection("Language Profeciency")
+                setSection("Language Profeciency");
             }
         } catch (error) {
             toast.error(error.message || "Failed to save job reference.");
@@ -102,11 +119,13 @@ export function JobReferenceForm({ userId, fromProfile = false, setSection }) {
                         label="Preferred Occupation 2"
                         value={formData.occupation2}
                         onChange={(e) => handleChange("occupation2", e.target.value)}
+                        required
                     />
                     <InputGroup
                         label="Preferred Occupation 3"
                         value={formData.occupation3}
                         onChange={(e) => handleChange("occupation3", e.target.value)}
+                        required
                     />
                 </div>
 
@@ -121,23 +140,59 @@ export function JobReferenceForm({ userId, fromProfile = false, setSection }) {
 
                 {/* Preferred Locations */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <InputGroup
-                        label="Preferred Work Location 1"
-                        value={formData.location1}
-                        onChange={(e) => handleChange("location1", e.target.value)}
-                        required
-                    />
-                    <InputGroup
-                        label="Preferred Work Location 2"
-                        value={formData.location2}
-                        onChange={(e) => handleChange("location2", e.target.value)}
-                    />
-                    <InputGroup
-                        label="Preferred Work Location 3"
-                        value={formData.location3}
-                        onChange={(e) => handleChange("location3", e.target.value)}
-                    />
+                    {/* Location 1 */}
+                    {formData.locationType === "Local" ? (
+                        <SelectGroup
+                            label="Preferred Work Location 1"
+                            value={formData.location1}
+                            onValueChange={(val) => handleChange("location1", val)}
+                            items={caviteLocations}
+                            required
+                        />
+                    ) : (
+                        <InputGroup
+                            label="Preferred Work Location 1"
+                            value={formData.location1}
+                            onChange={(e) => handleChange("location1", e.target.value)}
+                            required
+                        />
+                    )}
+
+                    {/* Location 2 */}
+                    {formData.locationType === "Local" ? (
+                        <SelectGroup
+                            label="Preferred Work Location 2"
+                            value={formData.location2}
+                            onValueChange={(val) => handleChange("location2", val)}
+                            items={caviteLocations}
+                        />
+                    ) : (
+                        <InputGroup
+                            label="Preferred Work Location 2"
+                            value={formData.location2}
+                            onChange={(e) => handleChange("location2", e.target.value)}
+                        />
+                    )}
+
+                    {/* Location 3 */}
+                    {formData.locationType === "Local" ? (
+                        <SelectGroup
+                            label="Preferred Work Location 3"
+                            value={formData.location3}
+                            onValueChange={(val) => handleChange("location3", val)}
+                            items={caviteLocations}
+                            required
+                        />
+                    ) : (
+                        <InputGroup
+                            label="Preferred Work Location 3"
+                            value={formData.location3}
+                            onChange={(e) => handleChange("location3", e.target.value)}
+                            required
+                        />
+                    )}
                 </div>
+
 
                 {/* Submit */}
                 <div className="pt-6">

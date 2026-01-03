@@ -6,7 +6,7 @@ import { useClaims } from "@/hooks/use-claims";
 import { useFetchOne } from "@/hooks/use-fetch-one";
 import { UserService } from "@/services/user.service";
 import Loader from "@/components/ui/loader";
-import { Briefcase, MapPin } from "lucide-react";
+import { Briefcase, BriefcaseBusiness, Calendar, FilePenLine, MapPin } from "lucide-react";
 import { UpdateJobReference } from '@/features/account/components/UpdateJobReference'
 
 export function JobReferenceSection() {
@@ -72,25 +72,25 @@ export function JobReferenceSection() {
                 <div className="bg-white shadow-sm rounded-xl border p-5 space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800">Occupations</h2>
 
-                    <InfoItem label="Occupation 1" value={user.occupation1} icon="🧑‍🏭" />
-                    <InfoItem label="Occupation 2" value={user.occupation2} icon="🏭" />
-                    <InfoItem label="Occupation 3" value={user.occupation3} icon="🧰" />
+                    <InfoItem label="Occupation 1" value={user.occupation1} icon={BriefcaseBusiness} />
+                    <InfoItem label="Occupation 2" value={user.occupation2} icon={BriefcaseBusiness} />
+                    <InfoItem label="Occupation 3" value={user.occupation3} icon={BriefcaseBusiness} />
                 </div>
 
                 {/* Locations */}
                 <div className="bg-white shadow-sm rounded-xl border p-5 space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800">Preferred Locations</h2>
 
-                    <InfoItem label="Location 1" value={user.location1} icon="📍" />
-                    <InfoItem label="Location 2" value={user.location2} icon="🌏" />
-                    <InfoItem label="Location 3" value={user.location3} icon="🗺️" />
+                    <InfoItem label="Location 1" value={user.location1} icon={MapPin} />
+                    <InfoItem label="Location 2" value={user.location2} icon={MapPin} />
+                    <InfoItem label="Location 3" value={user.location3} icon={MapPin} />
                 </div>
 
                 {/* Dates */}
                 <div className="bg-white shadow-sm rounded-xl border p-5 space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800">Dates</h2>
 
-                    <InfoItem label="Filled Up" value={formatDate(user.created_at)} icon="🗓️" />
+                    <InfoItem label="Filled Up" value={formatDate(user.created_at)} icon={Calendar} />
                 </div>
             </div>
 
@@ -99,11 +99,11 @@ export function JobReferenceSection() {
     );
 }
 
-function InfoItem({ label, value, icon }) {
+function InfoItem({ label, value, icon: Icon }) {
     return (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-2 border-b last:border-none">
             <div className="flex items-center gap-2">
-                <span className="text-lg">{icon}</span>
+                {Icon && <Icon className="w-4 h-4 text-gray-500" />}
                 <span className="font-medium text-gray-700">{label}</span>
             </div>
             <span className="text-gray-600 text-sm sm:text-base mt-1 sm:mt-0 text-right">

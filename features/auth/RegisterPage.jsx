@@ -37,7 +37,7 @@ const sections = [
 ];
 
 export function RegisterPage({ fromProfile = false, toEdit }) {
-    const [section, setSection] = useState(sections[0]);
+    const [section, setSection] = useState(sections[4]);
     const [userId, setUserId] = useState(0)
     const router = useRouter();
 
@@ -97,7 +97,7 @@ export function RegisterPage({ fromProfile = false, toEdit }) {
                     toast.info("Please login with your credentials.");
                     router.push("/auth/login");
                 } else {
-                    toast.info("Please fill out your personal information.");
+                    toast.info("Please verify your email to login. Yo may now proceed to personal information form.");
                     setSection("Personal Information");
                 }
             }
