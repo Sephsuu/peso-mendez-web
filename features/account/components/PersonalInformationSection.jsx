@@ -18,6 +18,7 @@ import {
     Clock,
     FilePenLine,
 } from "lucide-react";
+import { formatDateToWord } from "@/lib/helper";
 
 export function PersonalInformationSection() {
     const [reload, setReload] = useState(false);
@@ -155,12 +156,12 @@ export function PersonalInformationSection() {
 
                     <InfoItem
                         label="Filled Up"
-                        value={formatDate(user.created_at)}
+                        value={formatDateToWord(user.created_at)}
                         icon={Calendar}
                     />
                     <InfoItem
                         label="Last Updated"
-                        value={formatDate(user.updated_at)}
+                        value={formatDateToWord(user.updated_at)}
                         icon={Clock}
                     />
                 </div>

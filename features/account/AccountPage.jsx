@@ -5,7 +5,10 @@ import { CredentialsSection } from '@/features/account/components/CredentialsSec
 import { PersonalInformationSection } from '@/features/account/components/PersonalInformationSection'
 import { JobReferenceSection } from '@/features/account/components/JobReferenceSection'
 import { LanguageProficiencySection } from '@/features/account/components/LanguageProficencySection'
-
+import { EducationalBackgroundSection } from "./components/EducationalBackgroundSection";
+import { TechVocTrainingsSection } from "./components/TechVocTrainingsSection";
+import { EligibilityAndLicenseSection } from "./components/EligibilitySection";
+import { WorkExperienceSection } from "./components/WorkExperienceSection";
 
 const sections = [
     "Credentials",
@@ -40,6 +43,10 @@ export function AccountPage() {
                 {tab === sections[1] && (<PersonalInformationSection />)}
                 {tab === sections[2] && (<JobReferenceSection />)}
                 {tab === sections[3] && (<LanguageProficiencySection />)}
+                {tab === sections[4] && (<EducationalBackgroundSection />)}
+                {tab === sections[5] && (<TechVocTrainingsSection />)}
+                {tab === sections[6] && (<EligibilityAndLicenseSection />)}
+                {tab === sections[7] && (<WorkExperienceSection />)}
             </div>
         </section>
     );

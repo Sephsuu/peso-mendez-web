@@ -18,4 +18,13 @@ export class AuthService {
             credentials
         )
     }
+
+    static async resetPassword({ email, token, newPassword }) {
+        return await requestData(
+            `${url}/reset-password`,
+            'POST',
+            undefined,
+            { email, token, newPassword }
+        )
+    }
 }

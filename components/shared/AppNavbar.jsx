@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Menu, UserRound } from "lucide-react";
+import { LayoutGrid, Menu, UserRound } from "lucide-react";
 import {
     Sheet,
     SheetContent,
@@ -26,7 +26,9 @@ const routes = [
 export function AppNavbar() {
     const pathname = usePathname();
 
-    if (pathname === "/account/email-verification") {
+    const hiddenPaths = ["/account/email-verification", "/reset-password"];
+
+    if (hiddenPaths.some((p) => pathname.includes(p))) {
         return null;
     }
 
@@ -64,6 +66,23 @@ export function AppNavbar() {
                             Sign in / Register
                         </Button>
                     )}
+                    <Button
+                    asChild
+                    className="-ml-4 bg-white border border-primary hover:opacity-90 text-primary hover:bg-blue-100"
+                    >
+                        <a
+                            href="/downloads/papiverse-app.apk"
+                            download
+                            className="flex items-center"
+                            onClick={() => setOpen(false)}
+                        >
+                            <LayoutGrid className="mr-2" />
+                            Download App
+                        </a>
+                    </Button>
+
+
+         
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -101,6 +120,7 @@ export function AppNavbar() {
                                 >
                                     Sign in / Register
                                 </Button>
+
                             </div>
                         </SheetContent>
                     </Sheet>

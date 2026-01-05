@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { UserService } from "@/services/user.service";
 
-export function UpdateLanguageProficiency({ open, setOpen, user, userId }) {
+export function UpdateLanguageProficiency({ open, setOpen, user, userId, setReload }) {
     const defaultLanguages = {
         "Mandarin": { 
             id: null, 
@@ -102,6 +102,7 @@ export function UpdateLanguageProficiency({ open, setOpen, user, userId }) {
             }
 
             toast.success("Language proficiency updated!");
+            setReload(prev => !prev)
             setOpen(false);
 
         } catch (err) {
@@ -163,7 +164,7 @@ export function UpdateLanguageProficiency({ open, setOpen, user, userId }) {
                 <DialogFooter>
                     <Button
                         onClick={handleSubmit}
-                        className="w-full bg-primary text-white"
+                        className="ms-auto w-fit bg-primary text-white"
                     >
                         Save Changes
                     </Button>

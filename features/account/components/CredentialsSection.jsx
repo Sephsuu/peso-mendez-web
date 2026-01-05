@@ -18,6 +18,30 @@ export function CredentialsSection() {
     const userId = claims?.id || claims?.userId;
     const { data, loading } = useFetchOne(UserService.getUserCredential, [userId], [userId]);
     const [toEdit, setEdit] = useState(false);
+
+    async function viewResumePdf() {
+        try {
+            console.log(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/generate-resume?id=${userId}`);
+            
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/generate-resume?id=${userId}`, {
+            method: "GET",
+            headers: {
+                Accept: "application/pdf",
+            },
+            });
+
+            if (!res.ok) throw new Error("Failed to generate resume");
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            window.open(url, "_blank", "noopener,noreferrer");
+
+            setTimeout(() => window.URL.revokeObjectURL(url), 60_000);
+        } catch (err) {
+            toast.error(err?.message || "Failed to view resume.");
+        }
+    }
     
     if (authLoading || loading) return <Loader />
     if (!data) return <div>Error</div>
@@ -43,9 +67,16 @@ export function CredentialsSection() {
                         <Button 
                             variant="secondary"
                             onClick={() => setEdit(!toEdit)}
-                            className="mt-5 bg-light"
+                            className="mt-5 m-2 bg-light"
                         >
                             Edit Profile
+                        </Button>
+                        <Button 
+                            variant="secondary"
+                            onClick={viewResumePdf}
+                            className="mt-5 bg-light"
+                        >
+                            View Resume
                         </Button>
                     </div>
 

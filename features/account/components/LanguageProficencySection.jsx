@@ -10,13 +10,14 @@ import { useFetchData } from "@/hooks/use-fetch-data";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export function LanguageProficiencySection() {
+    const [reload, setReload] = useState(false);
     const [open, setOpen] = useState(false);
     const { claims, loading: authLoading } = useClaims();
     const userId = claims?.id || claims?.userId;
 
     const { data: user, loading } = useFetchData(
         UserService.getUserLanguageProfeciency,
-        [userId],
+        [userId, reload],
         [userId],
     );
 
@@ -71,7 +72,13 @@ export function LanguageProficiencySection() {
                 </div>
             </div>
 
-            <UpdateLanguageProficiency open={open} setOpen={setOpen} user={user} userId={userId}/>
+            <UpdateLanguageProficiency 
+                open={open} 
+                setOpen={setOpen} 
+                user={user} 
+                userId={userId}
+                setReload={setReload}
+            />
         </div>
     );
 }

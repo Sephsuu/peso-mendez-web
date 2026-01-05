@@ -8,15 +8,17 @@ import { UserService } from "@/services/user.service";
 import Loader from "@/components/ui/loader";
 import { Briefcase, BriefcaseBusiness, Calendar, FilePenLine, MapPin } from "lucide-react";
 import { UpdateJobReference } from '@/features/account/components/UpdateJobReference'
+import { formatDateToWord } from "@/lib/helper";
 
 export function JobReferenceSection() {
+    const [reload, setReload] = useState(false);
     const [open, setOpen] = useState(false);
     const { claims, loading: authLoading } = useClaims();
     const userId = claims?.id || claims?.userId;
 
     const { data: user, loading } = useFetchOne(
         UserService.getUserJobReference,
-        [userId],
+        [userId, reload],
         [userId],
     );
 
@@ -90,11 +92,17 @@ export function JobReferenceSection() {
                 <div className="bg-white shadow-sm rounded-xl border p-5 space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800">Dates</h2>
 
-                    <InfoItem label="Filled Up" value={formatDate(user.created_at)} icon={Calendar} />
+                    <InfoItem label="Filled Up" value={formatDateToWord(user.created_at)} icon={Calendar} />
                 </div>
             </div>
 
-            <UpdateJobReference open={open} setOpen={setOpen} user={user} userId={userId}/>
+            <UpdateJobReference 
+                open={open} 
+                setOpen={setOpen} 
+                user={user} 
+                userId={userId}
+                setReload={setReload}
+            />
         </div>
     );
 }

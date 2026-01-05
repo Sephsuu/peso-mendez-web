@@ -121,6 +121,10 @@ export class UserService {
         return await requestData(`${url}/update-language`, "PATCH", undefined, user);
     }
 
+    static async updateUserEducationalBackground(user) {
+        return await requestData(`${url}/update-educ-bg`, "PATCH", undefined, user);
+    }
+
     static async updateUserTechVocTraining(user) {
         return await requestData(`${url}/update-techvoc-training`, "PATCH", undefined, user);
     }

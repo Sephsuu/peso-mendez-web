@@ -4,6 +4,7 @@ import { useClaims } from "@/hooks/use-claims";
 import { AdminDashboard } from "@/features/dashboard/AdminDashboard";
 import { JobSeekerDashboard } from "@/features/dashboard/JobSeekerDashboard";
 import { EmployerDashboard } from "@/features/dashboard/EmployerDashboard";
+import { LoginPage } from "../auth/LoginPage";
 
 export function DashboardPage() {
     const { claims, loading } = useClaims();
@@ -13,7 +14,7 @@ export function DashboardPage() {
     }
 
     if (!claims) {
-        return <div className="flex h-screen items-center justify-center">Unauthorized</div>;
+        return <LoginPage />;
     }
 
     return (

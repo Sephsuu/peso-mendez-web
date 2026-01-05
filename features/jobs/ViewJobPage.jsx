@@ -29,6 +29,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import { PESOLoader } from "@/components/ui/loader";
+import { formatDateToWord } from "@/lib/helper";
 
 export function ViewJobPage() {
     const { id } = useParams();
@@ -223,10 +224,7 @@ export function ViewJobPage() {
                             label="Date Posted"
                             value={
                                 job.created_at
-                                    ? format(
-                                          new Date(job.created_at),
-                                          "MMM dd, yyyy"
-                                      )
+                                    ? formatDateToWord(job.created_at)
                                     : "N/A"
                             }
                         />

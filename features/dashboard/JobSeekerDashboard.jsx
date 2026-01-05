@@ -57,17 +57,18 @@ export function JobSeekerDashboard() {
                         <h2 className="text-lg font-semibold">Profile Strength</h2>
                         <span className="text-sm font-medium">
                             {typeof profileStrength === "number"
-                                ? `${profileStrength.toFixed()}%`
+                                ? `${Math.round(profileStrength * 100 / 10) * 10}%`
                                 : "0%"}
                         </span>
                     </div>
 
                     <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                            className="h-3 bg-blue-500 rounded-full transition-all"
-                            style={{ width: `${profileStrength ?? 0}%` }}
-                        ></div>
+                            className="h-3 bg-primary rounded-full transition-all"
+                            style={{ width: `${Math.round(profileStrength * 100 / 10) * 10 ?? 0}%` }}
+                        />
                     </div>
+
 
                     <p className="text-gray-600 text-center text-sm md:text-base">
                         To complete your profile, please list your skills and upload your resume.
