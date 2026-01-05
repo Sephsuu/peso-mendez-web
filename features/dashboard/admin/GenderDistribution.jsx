@@ -15,8 +15,8 @@ import {
     CartesianGrid,
     Cell,
 } from "recharts";
-import { FileUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FileUp } from "lucide-react";
 
 function TabButton({ label, selected, onClick }) {
     return (
@@ -31,12 +31,11 @@ function TabButton({ label, selected, onClick }) {
             ].join(" ")}
         >
             {label}
-            {/* {selected && <div className="mt-2 h-0.5 w-full rounded bg-primary" />} */}
         </button>
     );
 }
 
-function ClienteleTable({ data }) {
+function GenderTable({ data }) {
     return (
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <table className="w-full text-sm">
@@ -46,7 +45,7 @@ function ClienteleTable({ data }) {
                             #
                         </th>
                         <th className="px-3 py-3 text-left font-semibold text-slate-700">
-                            Clientele Type
+                            Gender
                         </th>
                         <th className="w-40 px-3 py-3 text-left font-semibold text-slate-700">
                             Total Count
@@ -56,10 +55,10 @@ function ClienteleTable({ data }) {
 
                 <tbody className="bg-white">
                     {data.map((row, idx) => (
-                        <tr key={row?.clientele ?? idx} className="border-t border-slate-100">
+                        <tr key={row?.sex ?? idx} className="border-t border-slate-100">
                             <td className="px-3 py-3 text-slate-700">{idx + 1}</td>
                             <td className="px-3 py-3 font-semibold text-slate-900">
-                                {row?.clientele ?? "N/A"}
+                                {row?.sex ?? "N/A"}
                             </td>
                             <td className="px-3 py-3 font-semibold text-slate-900">
                                 {String(row?.total ?? 0)}
@@ -80,24 +79,17 @@ function ClienteleTable({ data }) {
     );
 }
 
-function ClienteleBarChart({ data }) {
-    // IMPORTANT: Recharts needs numeric values (not strings).
+function GenderBarChart({ data }) {
     const chartData = useMemo(() => {
-        return data.map((d) => {
-            return {
-                name: d?.clientele ?? "N/A",
-                total: Number(d?.total ?? 0),
-            };
-        });
+        return data.map((d) => ({
+            name: d?.sex ?? "N/A",
+            total: Number(d?.total ?? 0),
+        }));
     }, [data]);
 
-    // if there are many categories, use horizontal scroll with a wider chart
     const minWidth = useMemo(() => {
-        return Math.max(700, chartData.length * 90);
+        return Math.max(500, chartData.length * 120);
     }, [chartData.length]);
-
-    // Use your CSS primary color if available (shadcn uses hsl(var(--primary)))
-    const primary = "hsl(var(--primary))";
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (!active || !payload || !payload.length) return null;
@@ -114,7 +106,6 @@ function ClienteleBarChart({ data }) {
 
     return (
         <div className="rounded-xl border border-slate-200 bg-white p-4">
-            {/* Recharts ResponsiveContainer needs an explicit height */}
             <div className="h-[280px] sm:h-[340px] md:h-[420px]">
                 <div className="h-full overflow-x-auto">
                     <div style={{ width: `${minWidth}px`, height: "100%" }}>
@@ -132,16 +123,12 @@ function ClienteleBarChart({ data }) {
                                     height={70}
                                     tick={{ fontSize: 12 }}
                                 />
-                                <YAxis
-                                    allowDecimals={false}
-                                    tick={{ fontSize: 12 }}
-                                />
+                                <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
                                 <Tooltip content={<CustomTooltip />} />
                                 <Bar
                                     dataKey="total"
                                     radius={[6, 6, 0, 0]}
                                     maxBarSize={44}
-                                    fill="#0d6efd"
                                 >
                                     {chartData.map((_, index) => (
                                         <Cell key={`cell-${index}`} fill="#1c398e" />
@@ -160,7 +147,7 @@ function ClienteleBarChart({ data }) {
     );
 }
 
-export function ClienteleDistribution() {
+export function GenderDistribution() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
     const [selectedTab, setSelectedTab] = useState("table");
@@ -170,11 +157,11 @@ export function ClienteleDistribution() {
 
         async function run() {
             try {
-                const res = await ReportService.getClienteleCounts();
+                const res = await ReportService.getGenderCounts();
                 if (!mounted) return;
                 setData(Array.isArray(res) ? res : []);
             } catch (e) {
-                console.error("Clientele Chart Error:", e);
+                console.error("Gender Chart Error:", e);
             } finally {
                 if (mounted) setLoading(false);
             }
@@ -197,10 +184,10 @@ export function ClienteleDistribution() {
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
-        doc.text("Clientele Distribution Report", 14, 20);
+        doc.text("Gender Distribution Report", 14, 20);
 
         const tableBody = data.map((row) => [
-            row.clientele ?? "N/A",
+            row.sex ?? "N/A",
             String(row.total ?? 0),
         ]);
 
@@ -211,7 +198,7 @@ export function ClienteleDistribution() {
 
         autoTable(doc, {
             startY: 30,
-            head: [["Clientele Type", "Total Count"]],
+            head: [["Gender", "Total Count"]],
             body: tableBody,
             theme: "grid",
             styles: {
@@ -232,8 +219,8 @@ export function ClienteleDistribution() {
                 fillColor: [255, 255, 255],
             },
             columnStyles: {
-                0: { cellWidth: tableWidth * 0.75, halign: "left" },
-                1: { cellWidth: tableWidth * 0.25, halign: "center" },
+                0: { cellWidth: tableWidth * 0.6, halign: "left" },
+                1: { cellWidth: tableWidth * 0.4, halign: "center" },
             },
             margin: { left: marginLeft, right: marginRight },
         });
@@ -251,9 +238,8 @@ export function ClienteleDistribution() {
             );
         }
 
-        doc.save("clientele-distribution-report.pdf");
+        doc.save("gender-distribution-report.pdf");
     };
-
 
     if (loading) return <SectionLoader />;
 
@@ -265,7 +251,7 @@ export function ClienteleDistribution() {
         <section className="w-full">
             <div className="px-2 py-1">
                 <h2 className="text-lg font-semibold text-slate-900">
-                    Clientele Distribution
+                    Gender Distribution
                 </h2>
             </div>
 
@@ -275,13 +261,11 @@ export function ClienteleDistribution() {
                     selected={selectedTab === "table"}
                     onClick={() => setSelectedTab("table")}
                 />
-
                 <TabButton
                     label="Graph"
                     selected={selectedTab === "graph"}
                     onClick={() => setSelectedTab("graph")}
                 />
-
                 <Button
                     type="button"
                     onClick={handleExportPdf}
@@ -293,8 +277,8 @@ export function ClienteleDistribution() {
             </div>
 
             <div className="mt-4 px-2">
-                {selectedTab === "table" && <ClienteleTable data={data} />}
-                {selectedTab === "graph" && <ClienteleBarChart data={data} />}
+                {selectedTab === "table" && <GenderTable data={data} />}
+                {selectedTab === "graph" && <GenderBarChart data={data} />}
             </div>
         </section>
     );

@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:3005';
+export const BASE_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}`;
 
 export async function requestData(url, method, headers, body) {
     console.log('Endpoint:', url);

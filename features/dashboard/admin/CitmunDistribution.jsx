@@ -31,14 +31,13 @@ function TabButton({ label, selected, onClick }) {
             ].join(" ")}
         >
             {label}
-            {/* {selected && <div className="mt-2 h-0.5 w-full rounded bg-primary" />} */}
         </button>
     );
 }
 
-function ClienteleTable({ data }) {
+function CitmunTable({ data }) {
     return (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
             <table className="w-full text-sm">
                 <thead className="bg-slate-100">
                     <tr>
@@ -46,7 +45,7 @@ function ClienteleTable({ data }) {
                             #
                         </th>
                         <th className="px-3 py-3 text-left font-semibold text-slate-700">
-                            Clientele Type
+                            City / Municipality
                         </th>
                         <th className="w-40 px-3 py-3 text-left font-semibold text-slate-700">
                             Total Count
@@ -56,10 +55,15 @@ function ClienteleTable({ data }) {
 
                 <tbody className="bg-white">
                     {data.map((row, idx) => (
-                        <tr key={row?.clientele ?? idx} className="border-t border-slate-100">
-                            <td className="px-3 py-3 text-slate-700">{idx + 1}</td>
+                        <tr
+                            key={row?.citmun ?? idx}
+                            className="border-t border-slate-100"
+                        >
+                            <td className="px-3 py-3 text-slate-700">
+                                {idx + 1}
+                            </td>
                             <td className="px-3 py-3 font-semibold text-slate-900">
-                                {row?.clientele ?? "N/A"}
+                                {row?.citmun ?? "N/A"}
                             </td>
                             <td className="px-3 py-3 font-semibold text-slate-900">
                                 {String(row?.total ?? 0)}
@@ -69,7 +73,10 @@ function ClienteleTable({ data }) {
 
                     {data.length === 0 && (
                         <tr>
-                            <td colSpan={3} className="px-3 py-10 text-center text-slate-400">
+                            <td
+                                colSpan={3}
+                                className="px-3 py-10 text-center text-slate-400"
+                            >
                                 No data available
                             </td>
                         </tr>
@@ -80,24 +87,17 @@ function ClienteleTable({ data }) {
     );
 }
 
-function ClienteleBarChart({ data }) {
-    // IMPORTANT: Recharts needs numeric values (not strings).
+function CitmunBarChart({ data }) {
     const chartData = useMemo(() => {
-        return data.map((d) => {
-            return {
-                name: d?.clientele ?? "N/A",
-                total: Number(d?.total ?? 0),
-            };
-        });
+        return data.map((d) => ({
+            name: d?.citmun ?? "N/A",
+            total: Number(d?.total ?? 0),
+        }));
     }, [data]);
 
-    // if there are many categories, use horizontal scroll with a wider chart
     const minWidth = useMemo(() => {
-        return Math.max(700, chartData.length * 90);
+        return Math.max(700, chartData.length * 120);
     }, [chartData.length]);
-
-    // Use your CSS primary color if available (shadcn uses hsl(var(--primary)))
-    const primary = "hsl(var(--primary))";
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (!active || !payload || !payload.length) return null;
@@ -114,7 +114,6 @@ function ClienteleBarChart({ data }) {
 
     return (
         <div className="rounded-xl border border-slate-200 bg-white p-4">
-            {/* Recharts ResponsiveContainer needs an explicit height */}
             <div className="h-[280px] sm:h-[340px] md:h-[420px]">
                 <div className="h-full overflow-x-auto">
                     <div style={{ width: `${minWidth}px`, height: "100%" }}>
@@ -141,10 +140,12 @@ function ClienteleBarChart({ data }) {
                                     dataKey="total"
                                     radius={[6, 6, 0, 0]}
                                     maxBarSize={44}
-                                    fill="#0d6efd"
                                 >
                                     {chartData.map((_, index) => (
-                                        <Cell key={`cell-${index}`} fill="#1c398e" />
+                                        <Cell
+                                            key={`cell-${index}`}
+                                            fill="#1c398e"
+                                        />
                                     ))}
                                 </Bar>
                             </BarChart>
@@ -160,7 +161,7 @@ function ClienteleBarChart({ data }) {
     );
 }
 
-export function ClienteleDistribution() {
+export function CitmunDistribution() {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
     const [selectedTab, setSelectedTab] = useState("table");
@@ -170,11 +171,11 @@ export function ClienteleDistribution() {
 
         async function run() {
             try {
-                const res = await ReportService.getClienteleCounts();
+                const res = await ReportService.getCitmunCounts();
                 if (!mounted) return;
                 setData(Array.isArray(res) ? res : []);
             } catch (e) {
-                console.error("Clientele Chart Error:", e);
+                console.error("Citmun Chart Error:", e);
             } finally {
                 if (mounted) setLoading(false);
             }
@@ -197,10 +198,10 @@ export function ClienteleDistribution() {
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
-        doc.text("Clientele Distribution Report", 14, 20);
+        doc.text("City/Municipality Report", 14, 20);
 
         const tableBody = data.map((row) => [
-            row.clientele ?? "N/A",
+            row.citmun ?? "N/A",
             String(row.total ?? 0),
         ]);
 
@@ -211,7 +212,7 @@ export function ClienteleDistribution() {
 
         autoTable(doc, {
             startY: 30,
-            head: [["Clientele Type", "Total Count"]],
+            head: [["City/Municipality", "Total Count"]],
             body: tableBody,
             theme: "grid",
             styles: {
@@ -251,21 +252,24 @@ export function ClienteleDistribution() {
             );
         }
 
-        doc.save("clientele-distribution-report.pdf");
+        doc.save("city-municipality-report.pdf");
     };
-
 
     if (loading) return <SectionLoader />;
 
     if (!data || data.length === 0) {
-        return <div className="text-center text-slate-500 py-10">No data available</div>;
+        return (
+            <div className="text-center text-slate-500 py-10">
+                No city / municipality data available
+            </div>
+        );
     }
 
     return (
         <section className="w-full">
             <div className="px-2 py-1">
                 <h2 className="text-lg font-semibold text-slate-900">
-                    Clientele Distribution
+                    City / Municipality Distribution
                 </h2>
             </div>
 
@@ -275,13 +279,11 @@ export function ClienteleDistribution() {
                     selected={selectedTab === "table"}
                     onClick={() => setSelectedTab("table")}
                 />
-
                 <TabButton
                     label="Graph"
                     selected={selectedTab === "graph"}
                     onClick={() => setSelectedTab("graph")}
                 />
-
                 <Button
                     type="button"
                     onClick={handleExportPdf}
@@ -293,8 +295,8 @@ export function ClienteleDistribution() {
             </div>
 
             <div className="mt-4 px-2">
-                {selectedTab === "table" && <ClienteleTable data={data} />}
-                {selectedTab === "graph" && <ClienteleBarChart data={data} />}
+                {selectedTab === "table" && <CitmunTable data={data} />}
+                {selectedTab === "graph" && <CitmunBarChart data={data} />}
             </div>
         </section>
     );
