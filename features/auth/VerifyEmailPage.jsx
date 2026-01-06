@@ -13,7 +13,7 @@ export function VerifyEmailPage() {
         }
 
         window.location.href =
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/verify-email?token=${token}`;
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verify-email?token=${token}`;
     };
 
     return (
@@ -25,7 +25,7 @@ export function VerifyEmailPage() {
 
                 <button
                     onClick={handleVerify}
-                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-primary"
                 >
                     Verify Email
                 </button>
