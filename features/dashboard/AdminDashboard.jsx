@@ -63,8 +63,8 @@ export function AdminDashboard() {
 
         return [
             { label: "Total Users", value: activeUsers.length, Icon: Users, href: "/users" },
-            { label: "Employers", value: activeEmployers.length, Icon: Building2, href: "/users" },
-            { label: "Job Seekers", value: activeJobSeekers.length, Icon: BriefcaseBusiness, href: "/users" },
+            { label: "Employers", value: activeEmployers.length, Icon: Building2, href: "/users/employers" },
+            { label: "Job Seekers", value: activeJobSeekers.length, Icon: BriefcaseBusiness, href: "/users/job-seekers" },
             { label: "Announcements", value: announcements.length, Icon: Megaphone, href: "/users" },
         ];
     }, [users, announcements]);

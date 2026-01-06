@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { UserService } from "@/services/user.service";
-import { formatDateOnly } from "@/lib/utils";
 import { UsersTable } from './components/UsersTable'
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
-export default function ManageUsersPage() {
+export function ManageUsersPage() {
     const [loading, setLoading] = useState(true);
     const [reload, setReload] = useState(false);
     const [find, setFind] = useState("");
@@ -41,26 +43,33 @@ export default function ManageUsersPage() {
 
     return (
         <div className="p-5">
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-xl font-semibold">
-                    Manage Users
-                </h1>
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between my-2">
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => window.history.back()}
+                    >
+                        <ArrowLeft className="h-5 w-5" />
+                    </Button>
 
-                <button
-                    className="text-blue-600"
-                    onClick={() => window.history.back()}
-                >
-                    ⬅ Back
-                </button>
+                    <h1 className="text-xl font-semibold tracking-tight">
+                        Manage Users
+                    </h1>
+                </div>
             </div>
 
-            <input
-                type="text"
-                placeholder="Search for a user"
-                className="w-[90%] border px-3 py-2 mb-4"
-                value={find}
-                onChange={(e) => setFind(e.target.value)}
-            />
+            {/* Search */}
+            <div className="relative max-w-md my-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                    type="text"
+                    placeholder="Search by name or email"
+                    className="pl-9"
+                    value={find}
+                    onChange={(e) => setFind(e.target.value)}
+                />
+            </div>
 
             <UsersTable
                 users={activeUsers}
